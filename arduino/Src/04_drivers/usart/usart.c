@@ -162,22 +162,23 @@ usart_error_t usart_init(usart_settings_t settings)
     usart_baud_h_t baud_h = {
         .bits = {
             ._reserved = 0,
-            .baud_h = (settings.prescaler & 0xFF00) >> 8
+            .baud_h = ((settings.prescaler & 0xFF00) >> 8) & 0xF
         }
     };
 
     usart_baud_l_t baud_l = {
         .bits = {
-            .baud_l = (settings.prescaler & 0x00FF)
+            .baud_l = (uint8_t)(settings.prescaler & 0x00FF)
         }
     };
+    
+    UBRR0H = baud_h.reg;
+    UBRR0L = baud_l.reg;
     
     UCSR0A = status_a.reg;
     UCSR0B = status_b.reg;
     UCSR0C = status_c.reg;
     
-    UBRR0H = baud_h.reg;
-    UBRR0L = baud_l.reg;
     
     return ret_val;
 }
@@ -230,7 +231,8 @@ usart_error_t usart_write(uint8_t data)
     usart_error_t ret_val = USART_ERR_OK;
     
     // check if recieve complete and int is disabled 
-    if((UCSR0A & (1<<UDRE0)) && !(UCSR0B & (1<<TXCIE0))){
+    // if((UCSR0A & (1<<UDRE0)) && !(UCSR0B & (1<<TXCIE0))){
+    if((UCSR0A & (1<<UDRE0))){
         UDR0 = data;
     } else {
         ret_val = USART_ERR_NOT_OK;
