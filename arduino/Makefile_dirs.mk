@@ -12,6 +12,7 @@ INCLUDE_DIRS+=./Src/03_hal/ssd1306
 INCLUDE_DIRS+=./Src/04_drivers/port
 INCLUDE_DIRS+=./Src/04_drivers/spi
 INCLUDE_DIRS+=./Src/04_drivers/i2c
+INCLUDE_DIRS+=./Src/04_drivers/usart
 
 INCLUDE_DIRS+=./Src/99_boards
 
