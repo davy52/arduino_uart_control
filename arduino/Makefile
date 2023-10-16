@@ -16,8 +16,8 @@ DFP=$(DFP_PATH)$(DFP_FAMILY)$(DFP_VER)
 
 # target device setup
 UC=atmega328p
-#BOARD=arduino_pro_mini_3v3
-BOARD=arduino_nano
+BOARD=arduino_pro_mini_3v3
+# BOARD=arduino_nano
 
 # upload port
 #PORT := $(if $(PORT),$(PORT),COM11)

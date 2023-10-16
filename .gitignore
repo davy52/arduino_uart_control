@@ -1,3 +1,4 @@
 arduino/docs/*
 arduino/build/*
 arduino/.vscode/*
+.vscode
