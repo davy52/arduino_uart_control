@@ -6,11 +6,6 @@
 
 #include "i2c_common.h"
 
-typedef enum {
-    I2C_OK,
-    I2C_NOT_OK,
-    I2C_BUSY
-} i2c_error_t;
 
 typedef struct {
     uint8_t sda_PULLUP : 1;

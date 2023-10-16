@@ -7,11 +7,6 @@ typedef enum {
     I2C_BUSY
 } i2c_error_t;
 
-typedef struct {
-    uint8_t ack_enable : 1;
-    uint8_t int_enable : 1;
-    uint8_t general_call_enable;
-} i2c_settings_t;
 
 
 #define SCL A5

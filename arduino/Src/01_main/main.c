@@ -13,8 +13,7 @@
 #include "arduino_boards.h"
 
 #include <util/delay.h>
-
-#include "i2c_master.h"
+#include "usart.h"
 
 void delay_ms(uint32_t ms){
     while(ms--){
@@ -25,24 +24,32 @@ void delay_ms(uint32_t ms){
 int main(void)
 {
     DDRB |= LED_BUILTIN;
-    uint16_t dtime = 500;
+    uint16_t dtime = 200;
+    
+    usart_settings_t settings = {
+        .char_size = USART_CHAR_8BIT,
+        .data_reg_empty_int_en = 0,
+        .rx_complete_int_en = 0,
+        .tx_complete_int_en = 0,
+        .double_speed = 0,
+        .mode = USART_MODE_ASYNC,
+        .multi_proc_mode = 0,
+        .parity = USART_PARITY_EVEN,
+        .prescaler = 51,
+        .receiver_en = 0,
+        .transmitter_en = 0,
+        .stopbit_mode = USART_STOP_1BIT
+    };
+
+    usart_init(settings);
+    uint8_t data = 0;
 
     while(1){
-        for(uint8_t i = 0; i < 6; i++){
-            PORTB ^= LED_BUILTIN;
-            delay_ms(dtime);
-        }
+
+        while(usart_write(data) != USART_ERR_OK);
+        data += 3;
         
-        if(500 <= dtime){
-            dtime = 100;
-        }
-        else{
-            dtime = 500;
-        }
-
-
+        PORTB ^= LED_BUILTIN;
+        delay_ms(dtime);
     }
-
-    
-    
 }

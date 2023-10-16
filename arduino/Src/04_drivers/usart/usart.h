@@ -10,12 +10,11 @@
  * 
  * @copyright Copyright (c) 2023
  * 
- * @attention for now only works with usart0 controller TODO
+ * @attention for now only works with usart0 controller, SPI_MASTER might not work TODO:
  */
 
 #include <stdint-gcc.h>
-#include "interrupt.h"
-#include "inttypes.h"
+#include "avr/interrupt.h"
 
 #define usart_rx_int() \
     ISR(USART_RX_vect)
@@ -28,9 +27,9 @@
 
 typedef enum 
 {
-    USART_ASYNC = 0u,
-    USART_SYNC = 1u,
-    USART_MASTER_SPI = 3u
+    USART_MODE_ASYNC = 0u,
+    USART_MODE_SYNC = 1u,
+    USART_MODE_MASTER_SPI = 3u
 } usart_mode_t;
 
 typedef enum
@@ -58,7 +57,7 @@ typedef enum
 typedef enum
 {
     USART_CLK_POLARITY_RISING = 0u,
-    USART_CLK_POLARITY_FALLING = 1u
+    USART_CLK_POLARITY_FALLING = 1u,
 } usart_clk_polarity_t;
 
 typedef enum 

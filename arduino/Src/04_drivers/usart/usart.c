@@ -155,7 +155,7 @@ usart_error_t usart_init(usart_settings_t settings)
             .stopbit_sel = settings.stopbit_mode,
             .char_size_1 = (settings.char_size & 0x2U) >> 1,
             .char_size_0 = (settings.char_size & 0x1U),
-            .clk_polarity = settings.clk_polarity
+            .clk_polarity = ((settings.mode == USART_MODE_SYNC || settings.mode == USART_MODE_MASTER_SPI) ? settings.clk_polarity : 0)
         }
     };
 
@@ -217,7 +217,8 @@ usart_error_t usart_get_settings(usart_settings_t *settings)
         .mode = (status_c.bits.mode_1 << 1) | (status_c.bits.mode_0),
         .parity = (status_c.bits.parity_1 << 1) | (status_c.bits.parity_0),
         .stopbit_mode = status_c.bits.stopbit_sel,
-        .clk_polarity = status_c.bits.clk_polarity
+        .clk_polarity = status_c.bits.clk_polarity,
+        .prescaler = (baud_h.reg << 8) | (baud_l.reg)
     };
 
     *settings = temp_settings;
