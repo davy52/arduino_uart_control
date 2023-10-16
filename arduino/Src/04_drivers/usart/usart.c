@@ -7,14 +7,14 @@ typedef union
 {
     struct
     {
-        uint8_t rcv_complete : 1;           // there is data in rcv buffer
-        uint8_t tr_complete : 1;            // whole tramsit buffer shifted out
-        uint8_t data_reg_empty : 1;         // transmit buffer ready to recieve new data (can gen int)
-        uint8_t frame_error : 1;            // error in recieved frame
-        uint8_t data_overrun : 1;           // rcv buffer full and new frame start detected
-        uint8_t parity_error : 1;           // receive buffer parrity error
-        uint8_t double_speed : 1;           // double transmit speed set 
         uint8_t multi_proc_mode : 1;        // multi prcessor mode enable
+        uint8_t double_speed : 1;           // double transmit speed set 
+        uint8_t parity_error : 1;           // receive buffer parrity error
+        uint8_t data_overrun : 1;           // rcv buffer full and new frame start detected
+        uint8_t frame_error : 1;            // error in recieved frame
+        uint8_t data_reg_empty : 1;         // transmit buffer ready to recieve new data (can gen int)
+        uint8_t tr_complete : 1;            // whole tramsit buffer shifted out
+        uint8_t rcv_complete : 1;           // there is data in rcv buffer
     } __attribute__((packed)) bits;
 
     uint8_t reg;
@@ -25,14 +25,14 @@ typedef union
 {
     struct 
     {
-        uint8_t rx_c_int_en : 1;            // rx complete interrupt enable
-        uint8_t tx_c_int_en : 1;            // tx complete interrupt enable
-        uint8_t data_reg_empty_int_en : 1;  // data register empty interrupt enable
-        uint8_t rcv_en : 1;                 // receiver enable
-        uint8_t trm_en : 1;                 // transmitter enable
-        uint8_t char_size_2 : 1;            // char size sel bit
-        uint8_t rx_8bit : 1;                // rx 9th bit if using 9 bit char size
         uint8_t tx_8bit : 1;                // tx 9th bit if using 9 bit char size
+        uint8_t rx_8bit : 1;                // rx 9th bit if using 9 bit char size
+        uint8_t char_size_2 : 1;            // char size sel bit
+        uint8_t trm_en : 1;                 // transmitter enable
+        uint8_t rcv_en : 1;                 // receiver enable
+        uint8_t data_reg_empty_int_en : 1;  // data register empty interrupt enable
+        uint8_t tx_c_int_en : 1;            // tx complete interrupt enable
+        uint8_t rx_c_int_en : 1;            // rx complete interrupt enable
     } __attribute__((packed)) bits;
 
     uint8_t reg;
@@ -43,14 +43,14 @@ typedef union
 {
     struct
     {
-        uint8_t mode_1 : 1;                 // usart mode bit
-        uint8_t mode_0 : 1;                 // usart mode bit
-        uint8_t parity_1 : 1;               // parity mode bit
-        uint8_t parity_0 : 1;               // parity mode bit
-        uint8_t stopbit_sel : 1;            // selectr num of stop bits [ 0 - 1-bit, 1 - 2-bit ]
-        uint8_t char_size_1 : 1;            // char size sel bit
-        uint8_t char_size_0 : 1;            // char size sel bit
         uint8_t clk_polarity : 1;           // clock polarity in sync mode [ 0 - rising, 1 - falling ]
+        uint8_t char_size_0 : 1;            // char size sel bit
+        uint8_t char_size_1 : 1;            // char size sel bit
+        uint8_t stopbit_sel : 1;            // selectr num of stop bits [ 0 - 1-bit, 1 - 2-bit ]
+        uint8_t parity_0 : 1;               // parity mode bit
+        uint8_t parity_1 : 1;               // parity mode bit
+        uint8_t mode_0 : 1;                 // usart mode bit
+        uint8_t mode_1 : 1;                 // usart mode bit
     } __attribute__((packed)) bits;
     
     uint8_t reg;
@@ -85,8 +85,8 @@ typedef union
 {
     struct
     {
-        uint8_t _reserved : 4;
         uint8_t baud_h : 4;                   // baud rate
+        uint8_t _reserved : 4;
     }__attribute__((packed)) bits;
 
     uint8_t reg;
