@@ -63,7 +63,8 @@ typedef enum
 typedef enum 
 {
     USART_ERR_OK,
-    USART_ERR_NOT_OK
+    USART_ERR_NOT_OK,
+    USART_ERR_BAS_SETTINGS
 } usart_error_t;
 
 typedef struct
