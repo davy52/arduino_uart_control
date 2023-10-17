@@ -19,14 +19,14 @@ rb_err_t rb_init(ring_buffer_handle_t* handle, uint16_t size)
     
     ring_buffer_t *rb = (ring_buffer_t*)malloc(sizeof(uint8_t));
     if (NULL == rb){
-        handle = (ring_buffer_handle_t*)0;
+        *handle = (ring_buffer_handle_t)0;
         ret_val = RB_ERR_NOT_OK;
         return ret_val;
     }
 
     rb->data_ptr = (uint8_t*)calloc(size, sizeof(uint8_t));
     if (NULL == rb->data_ptr){
-        handle = (ring_buffer_handle_t*)0;
+        *handle = (ring_buffer_handle_t)0;
         ret_val = RB_ERR_NOT_OK;
         return ret_val;
     }
@@ -36,7 +36,8 @@ rb_err_t rb_init(ring_buffer_handle_t* handle, uint16_t size)
     rb->size = 0;
     rb->data_size = size;
     
-    return (ring_buffer_handle_t*)rb;
+    *handle = (ring_buffer_handle_t)rb;
+    return ret_val;
 }
 
 
@@ -114,7 +115,7 @@ rb_err_t rb_pop(ring_buffer_handle_t handle, uint8_t *data)
         return ret_val;
     }
 
-    data = *(rb->tail);
+    *data = *(rb->tail);
 
     rb->tail++;
     if(rb->data_ptr + rb->data_size - 1 < rb->tail){
@@ -122,6 +123,36 @@ rb_err_t rb_pop(ring_buffer_handle_t handle, uint8_t *data)
     }
     
     rb->size--;
+
+    return ret_val;
+}
+
+rb_err_t rb_popMultiple(ring_buffer_handle_t handle, uint8_t *data, uint16_t* data_len)
+{
+    rb_err_t ret_val = RB_ERR_OK;
+    ring_buffer_t* rb = (ring_buffer_t*)handle;
+    
+    uint16_t iter = 0;
+    
+    if((0u >= rb->head - rb->tail) || (0 == rb->size)){
+        ret_val = RB_ERR_EMPTY;
+        return ret_val;
+    }
+
+    if (rb->size <= *data_len){
+        *data_len = rb->size;
+    }
+    
+    for (iter = 0; iter < *data_len; iter++){
+        data[iter] = *(rb->tail);
+
+        rb->tail++;
+        if(rb->data_ptr + rb->data_size - 1 < rb->tail){
+            rb->tail = rb->data_ptr;
+        }
+    }
+    
+    rb->size -= *data_len;
 
     return ret_val;
 }
@@ -142,6 +173,12 @@ uint16_t rb_spaceLeft(ring_buffer_handle_t handle)
 {
     ring_buffer_t* rb = (ring_buffer_t*)handle;
     return rb->data_size - rb->size;
+}
+
+uint16_t rb_spaceUsed(ring_buffer_handle_t handle)
+{
+    ring_buffer_t* rb = (ring_buffer_t*)handle;
+    return rb->size;
 }
 
 rb_err_t rb_clear(ring_buffer_handle_t handle)

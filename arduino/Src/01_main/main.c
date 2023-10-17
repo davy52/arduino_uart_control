@@ -10,9 +10,13 @@
  */
 
 #define ARDUINO_BOARD arduino_pro_mini_3v3
-#include "arduino_boards.h"
+#define F_CPU 8000000ul
+// #include "arduino_boards.h"
+#include <avr/io.h>
+#define LED_BUILTIN _BV(PB5)
 
 #include <util/delay.h>
+#include "hal_uart.h"
 #include "usart.h"
 
 // FUSES = {
@@ -29,71 +33,33 @@ void delay_ms(uint32_t ms){
     }
 }
 
-volatile uint8_t data = 85;
-#define BAUD 51u
 
-void my_usart_init()
-{
-    usart_settings_t settings = {
-        .char_size = USART_CHAR_8BIT,
-        .data_reg_empty_int_en = 0,
-        .rx_complete_int_en = 0,
-        .tx_complete_int_en = 0,
-        .double_speed = 0,
-        .mode = USART_MODE_ASYNC,
-        .multi_proc_mode = 0,
-        .parity = USART_PARITY_EVEN,
-        .prescaler = BAUD,
-        .receiver_en = 1,
-        .transmitter_en = 1,
-        .stopbit_mode = USART_STOP_1BIT
-    };
-/*
-    stat_a = 0b00000000
-    stat_b = 0b00011000
-    stat_c = 0b00000110
-*/
-    usart_init(settings);
-}
-
-void my_usart()
-{
-        while(usart_write(data) != USART_ERR_OK);
-}
-
-void doc_usart_init()
-{
-    // from documentation
-    UCSR0A &= ~(1<<U2X0);
-    UBRR0H = (uint8_t)(BAUD >> 8) & 0xf;
-    UBRR0L = (uint8_t)(BAUD);
-
-    UCSR0B = (1<<RXEN0) | (1<<TXEN0);
-
-    UCSR0C = (1<<USBS0) | (3<UCSZ00);
-}
-
-void doc_usart()
-{
-        while(!(UCSR0A & (1<<UDRE0)));
-        UDR0 = data;
-}
-
+#include <stdlib.h>
 int main(void)
 {
     DDRB |= LED_BUILTIN;
     uint16_t dtime = 1000;
     
 
-    // doc_usart_init();
-    my_usart_init();
+    while( HAL_UART_ERR_OK != hal_uart_init(HAL_UART_BAUD_9600, HAL_UART_STOP_1BIT | HAL_UART_PARITY_EVEN | HAL_UART_CHAR_8BIT, 16u, 4u)){
+        PORTB ^= LED_BUILTIN;
+        delay_ms(100);
+    }
+    volatile uint16_t rx_count = 0;
+    uint8_t* data = (uint8_t*)malloc(sizeof(uint8_t));
 
     while(1){
+        // hal_uart_getRxBufferCount(&rx_count);
+        // if(0 < rx_count){
+        //     hal_uart_readByte(data);
+        //     hal_uart_sendByte(*data);
+        // }
+        hal_uart_sendByte(0x55);
+        hal_temp(0x80);
 
-        // doc_usart();
-        my_usart();
-
-        // data += 3;
+        //hal_uart_sendByte(0x55u);
+        // usart_read(&data);
+        // usart_write(data);
         
         PORTB ^= LED_BUILTIN;
         delay_ms(dtime);

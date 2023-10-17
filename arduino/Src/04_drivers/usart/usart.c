@@ -116,9 +116,9 @@ typedef union
     REST IN DOCUMENTATION
 */
 
-usart_error_t usart_init(usart_settings_t settings)
+usart_err_t usart_init(usart_settings_t settings)
 {
-    usart_error_t ret_val = USART_ERR_OK;
+    usart_err_t ret_val = USART_ERR_OK;
 
     usart_status_a_t status_a = {
         .bits = {
@@ -183,9 +183,9 @@ usart_error_t usart_init(usart_settings_t settings)
     return ret_val;
 }
 
-usart_error_t usart_get_settings(usart_settings_t *settings)
+usart_err_t usart_get_settings(usart_settings_t *settings)
 {
-    usart_error_t ret_val = USART_ERR_OK;
+    usart_err_t ret_val = USART_ERR_OK;
     
     usart_status_a_t status_a = {
         .reg = UCSR0A
@@ -226,9 +226,9 @@ usart_error_t usart_get_settings(usart_settings_t *settings)
     return ret_val;
 }
 
-usart_error_t usart_write(uint8_t data)
+usart_err_t usart_write(uint8_t data)
 {
-    usart_error_t ret_val = USART_ERR_OK;
+    usart_err_t ret_val = USART_ERR_OK;
     
     // check if recieve complete and int is disabled 
     // if((UCSR0A & (1<<UDRE0)) && !(UCSR0B & (1<<TXCIE0))){
@@ -246,9 +246,9 @@ inline void usart_write_int(uint8_t data)
    UDR0 = data; 
 }
 
-usart_error_t usart_read(uint8_t *data)
+usart_err_t usart_read(uint8_t *data)
 {
-    usart_error_t ret_val = USART_ERR_OK;
+    usart_err_t ret_val = USART_ERR_OK;
     
     *data = UDR0;
 

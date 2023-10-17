@@ -1,7 +1,9 @@
 #ifndef RING_BUFFER_H
 #define RING_BUFFER_H
 
-typedef void* ring_buffer_handle_t;
+#include <stdint-gcc.h>
+
+typedef volatile void* ring_buffer_handle_t;
 
 typedef enum
 {
@@ -22,11 +24,15 @@ rb_err_t rb_insertMultiple(ring_buffer_handle_t handle, uint8_t *data, uint16_t 
 
 rb_err_t rb_pop(ring_buffer_handle_t handle, uint8_t *data);
 
+rb_err_t rb_popMultiple(ring_buffer_handle_t handle, uint8_t *data, uint16_t* data_len);
+
 uint8_t rb_isFull(ring_buffer_handle_t handle);
 
 uint8_t rb_isEmpty(ring_buffer_handle_t handle);
 
 uint16_t rb_spaceLeft(ring_buffer_handle_t handle);
+
+uint16_t rb_spaceUsed(ring_buffer_handle_t handle);
 
 rb_err_t rb_clear(ring_buffer_handle_t handle);
 

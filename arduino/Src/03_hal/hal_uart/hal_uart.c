@@ -12,6 +12,7 @@ typedef enum
 static ring_buffer_handle_t tx_buffer_handle;
 static ring_buffer_handle_t rx_buffer_handle;
 
+
 static hal_uart_state_t hal_uart_state;
 
 static inline hal_uart_err_t hal_uart_write_byte()
@@ -32,6 +33,7 @@ static inline hal_uart_err_t hal_uart_write_byte()
         return ret_val;
     }
     
+    hal_uart_state = HAL_UART_RUNNING;
     return ret_val; 
 }
 
@@ -44,7 +46,7 @@ hal_uart_err_t hal_uart_init(hal_uart_baud_t baud_rate, uint8_t settings, uint16
     uint8_t parity = (uint8_t)(settings & 0x3); 
 
     uint8_t double_speed = (uint8_t)((baud_rate & 0x8000) >> 15);
-    uint16_t baud_rate = (uint16_t)(baud_rate & ~(0x8000));
+    uint16_t baud = (uint16_t)(baud_rate & ~(0x8000));
 
     usart_settings_t usart_settings = {
         .char_size = 0,
@@ -67,7 +69,7 @@ hal_uart_err_t hal_uart_init(hal_uart_baud_t baud_rate, uint8_t settings, uint16
     usart_settings.parity = parity;
 
     usart_settings.double_speed = double_speed;
-    usart_settings.prescaler = baud_rate;
+    usart_settings.prescaler = baud;
 
     if(USART_ERR_OK != usart_init(usart_settings)){
         ret_val = HAL_UART_ERR_NOT_OK;
@@ -90,7 +92,7 @@ hal_uart_err_t hal_uart_sendByte(uint8_t data)
     hal_uart_err_t ret_val = HAL_UART_ERR_OK;
 
     if(RB_ERR_OK != rb_insert(tx_buffer_handle, data)){
-        ret_val = HAL_UART_BUFFER_FULL;
+        ret_val = HAL_UART_ERR_BUFF_FULL;
         return ret_val;
     } 
     
@@ -110,7 +112,7 @@ hal_uart_err_t hal_uart_sendBytes(uint8_t *data, uint16_t data_len)
     hal_uart_err_t ret_val = HAL_UART_ERR_OK;
 
     if(RB_ERR_OK != rb_insertMultiple(tx_buffer_handle, data, data_len)){
-        ret_val = HAL_UART_BUFFER_FULL;
+        ret_val = HAL_UART_ERR_BUFF_FULL;
         return ret_val;
     } 
     
@@ -126,20 +128,48 @@ hal_uart_err_t hal_uart_sendBytes(uint8_t *data, uint16_t data_len)
 
 hal_uart_err_t hal_uart_readByte(uint8_t *data)
 {
-    return hal_uart_err_t();
+    hal_uart_err_t ret_val = HAL_UART_ERR_OK;
+    
+    if(RB_ERR_OK != rb_pop(rx_buffer_handle, data)){
+        ret_val = HAL_UART_ERR_BUFF_EMPTY;
+        return ret_val;
+    }
+
+    return ret_val;
 }
 
 hal_uart_err_t hal_uart_readBytes(uint8_t *data, uint16_t data_len)
 {
-    return hal_uart_err_t();
+    hal_uart_err_t ret_val = HAL_UART_ERR_OK;
+    
+    if (rb_spaceUsed(rx_buffer_handle) < data_len){
+        ret_val = HAL_UART_ERR_BUFF_EMPTY;
+        return ret_val;
+    }
+    
+    if (RB_ERR_OK != rb_popMultiple(rx_buffer_handle, data, &data_len)){
+        ret_val = HAL_UART_ERR_BUFF_EMPTY;
+        return ret_val;
+    }
+
+    return ret_val;
+}
+
+hal_uart_err_t hal_uart_getRxBufferCount(uint16_t *rx_buffer_count)
+{
+    hal_uart_err_t ret_val = HAL_UART_ERR_OK;
+    *rx_buffer_count = rb_spaceUsed(rx_buffer_handle);
+    return ret_val;
 }
 
 hal_uart_err_t hal_uart_response_init(uint8_t *format, uint8_t format_len, uint8_t *data, uint16_t *data_len)
 {
-    return hal_uart_err_t();
+    return 0;
 }
 
-usart_tx_int(){
+// usart_data_reg_empty_int()
+ISR(USART_UDRE_vect)
+{
     uint8_t data = 0;
 
     if (RB_ERR_OK != rb_pop(tx_buffer_handle, &data)){
@@ -149,4 +179,16 @@ usart_tx_int(){
     
     usart_write_int(data);
     return;
+}
+
+// usart_rx_int()
+ISR(USART_RX_vect)
+{
+    rb_insert(rx_buffer_handle, usart_read_int());
+    return;
+}
+
+void hal_temp(uint8_t data){
+    rb_insert(tx_buffer_handle, data);
+    usart_write(data);
 }

@@ -16,14 +16,13 @@
 #include <stdint-gcc.h>
 #include "avr/interrupt.h"
 
-#define usart_rx_int() \
-    ISR(USART_RX_vect)
+// #define usart_rx_int()                  ISR(USART_RX_vect)
 
-#define usart_tx_int() \
-    ISR(USART_TX_vect)
+// #define usart_tx_int() 
+//     ISR(USART_TX_vect)
 
-#define usart_data_reg_empty_int() \
-    ISR(USART_RX_vect)
+// #define usart_data_reg_empty_int() 
+//     ISR(USART_RX_vect)
 
 typedef enum 
 {
@@ -65,7 +64,7 @@ typedef enum
     USART_ERR_OK,
     USART_ERR_NOT_OK,
     USART_ERR_BAS_SETTINGS
-} usart_error_t;
+} usart_err_t;
 
 typedef struct
 {
@@ -100,70 +99,53 @@ typedef struct
  * @brief usart0 initialisation function. To be called before using usart module
  * 
  * @param settings settings for init
- * @return usart_error_t 
+ * @return usart_err_t 
  */
-usart_error_t usart_init(usart_settings_t settings);
+usart_err_t usart_init(usart_settings_t settings);
 
 /**
  * @brief usart0 initialisation readout function.
  * 
  * @param settings pointer to structure for settings
- * @return usart_error_t 
+ * @return usart_err_t 
  */
-usart_error_t usart_get_settings(usart_settings_t *settings);
+usart_err_t usart_get_settings(usart_settings_t *settings);
 
 /**
  * @brief function to write data with usart module
  * @warning Do not use inside interrupts
  * 
  * @param data data to be written 
- * @return usart_error_t 
+ * @return usart_err_t 
  */
-usart_error_t usart_write(uint8_t data);
+usart_err_t usart_write(uint8_t data);
 
 /**
  * @brief function to write data with usart module. Safe to use inside interrupt
  * 
  */
-inline void usart_write_int(uint8_t data) __attribute__((always_inline));
+ void usart_write_int(uint8_t data);
 
 // TODO:
-usart_error_t usart_write9(uint16_t data);
+usart_err_t usart_write9(uint16_t data);
 
 /**
  * @brief function to read received data on usart module
  * @warning Do not use inside interrupts
  * 
  * @param data pointer to read data into
- * @return usart_error_t 
+ * @return usart_err_t 
  */
-usart_error_t usart_read(uint8_t *data);
+usart_err_t usart_read(uint8_t *data);
 
 /**
  * @brief function to read received data on usart module. Safe to use inside interrupt
  * 
  */
-inline uint8_t usart_read_int() __attribute__((always_inline));
+ uint8_t usart_read_int();
 
 // TODO:
-usart_error_t usart_read9(uint16_t *data);
+usart_err_t usart_read9(uint16_t *data);
 
-/**
- * @brief Usart receive complete interrupt handle. To be implemented by user.
- * 
- */
-usart_rx_int();
-
-/**
- * @brief Usart transmitt complete interrupt handle. To be implemented by user.
- * 
- */
-usart_tx_int();
-
-/**
- * @brief Usart data register empty interrupt handle. To be implemented by user.
- * 
- */
-usart_data_reg_empty_int();
 
 #endif /* USART_H */
