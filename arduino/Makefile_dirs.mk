@@ -16,6 +16,7 @@ INCLUDE_DIRS+=./Src/04_drivers/i2c
 INCLUDE_DIRS+=./Src/04_drivers/usart
 
 INCLUDE_DIRS+=./Src/05_utils/ring_buffer
+INCLUDE_DIRS+=./Src/05_utils/debug
 
 INCLUDE_DIRS+=./Src/99_boards
 

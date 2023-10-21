@@ -175,11 +175,14 @@ usart_err_t usart_init(usart_settings_t settings)
     UBRR0H = baud_h.reg;
     UBRR0L = baud_l.reg;
     
+    
     UCSR0A = status_a.reg;
     UCSR0B = status_b.reg;
     UCSR0C = status_c.reg;
-    
-    
+
+    // DDRD |= (1<<PD1);
+    // DDRD &= ~(1<<PD0);
+    // PORTD &= ~((1<<PD0) | (1<<PD1));
     return ret_val;
 }
 
