@@ -80,7 +80,8 @@ typedef struct
     usart_mode_t mode;
     usart_parity_t parity;
     usart_stopbit_mode_t stopbit_mode;
-    uint16_t prescaler;
+    uint32_t baud;
+    uint32_t f_cpu;         // TODO: make it possible to use F_CPU macro instead 
 } usart_settings_t;
 
 /* BAUD RATE    for 8MHz F_CPU

@@ -30,7 +30,7 @@ void blink(uint8_t n)
 void blink_dur(uint8_t n, uint32_t dur)
 {
     delay_ms(5);
-    for(int i = 0; i < n; i++){
+    for(uint32_t i = 0; i < n; i++){
         PORTB |= LED_BUILTIN;
         delay_ms(dur);
         PORTB &= ~(LED_BUILTIN);
@@ -50,4 +50,18 @@ void blink_reg(uint8_t reg)
         delay_ms(1);
     }
     blink_dur(1, 2);
+}
+
+void blink_b32(uint32_t b32)
+{
+    delay_ms(5);
+    PORTB |= LED_BUILTIN;
+    delay_ms(1);
+    for(uint8_t i = 0; i < 32; i++){
+        PORTB &= ~LED_BUILTIN;
+        delay_ms(((b32 >> (31 - i)) & 1) ? 2 : 1);
+        PORTB |= LED_BUILTIN;
+        delay_ms(1);
+    }
+    PORTB &= ~LED_BUILTIN;
 }

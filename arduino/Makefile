@@ -63,7 +63,7 @@ OBJS=$(addprefix $(BUILD_PATH),$(OBJS1))
 # Compler options
 CFLAGS = -mmcu=$(UC) -Wall -Os -g
 CFLAGS += -L$(DFP)/gcc/dev/atmega328p
-CFLAGS += -DARDUINO_BOARD=$(BOARD)
+CFLAGS += -D$(BOARD)
 
 # Linker options
 LDFLAGS = -mmcu=$(UC)

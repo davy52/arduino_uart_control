@@ -38,7 +38,7 @@ static inline hal_uart_err_t hal_uart_write_byte()
     return ret_val; 
 }
 
-hal_uart_err_t hal_uart_init(hal_uart_baud_t baud_rate, uint8_t settings, uint16_t rx_buffer_size, uint16_t tx_buffer_size)
+hal_uart_err_t hal_uart_init(uint32_t f_cpu, uint16_t baud_rate, uint8_t settings, uint16_t rx_buffer_size, uint16_t tx_buffer_size)
 {
     hal_uart_err_t ret_val = HAL_UART_ERR_OK;
 
@@ -46,8 +46,7 @@ hal_uart_err_t hal_uart_init(hal_uart_baud_t baud_rate, uint8_t settings, uint16
     uint8_t stopbit_mode = (uint8_t)((settings & (1<<2)) >> 2);
     uint8_t parity = (uint8_t)(settings & 0x3); 
 
-    uint8_t double_speed = (uint8_t)((baud_rate & 0x8000) >> 15);
-    uint16_t baud = (uint16_t)(baud_rate & ~(0x8000));
+    uint8_t double_speed = (uint8_t)((settings & 0x80) >> 7);
 
     usart_settings_t usart_settings = {
         .char_size = 0,
@@ -59,10 +58,11 @@ hal_uart_err_t hal_uart_init(hal_uart_baud_t baud_rate, uint8_t settings, uint16
         .mode = USART_MODE_ASYNC,
         .multi_proc_mode = 0,
         .parity = 0,
-        .prescaler = 0,
+        .baud = 0,
         .receiver_en = 1,
         .transmitter_en = 1,
-        .stopbit_mode = 0
+        .stopbit_mode = 0,
+        .f_cpu = 0,
     };
     
     usart_settings.char_size = char_size;
@@ -70,7 +70,8 @@ hal_uart_err_t hal_uart_init(hal_uart_baud_t baud_rate, uint8_t settings, uint16
     usart_settings.parity = parity;
 
     usart_settings.double_speed = double_speed;
-    usart_settings.prescaler = baud;
+    usart_settings.baud = baud_rate;
+    usart_settings.f_cpu = f_cpu;
 
     
     if(RB_ERR_OK != rb_init(&tx_buffer_handle, tx_buffer_size)){

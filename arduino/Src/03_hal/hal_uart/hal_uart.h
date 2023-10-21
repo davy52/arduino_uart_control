@@ -35,28 +35,33 @@ typedef enum
 
 typedef enum
 {
-//#if F_CPU == 8000000ul
-    HAL_UART_BAUD_2400_DOUBLE = (416u | 0x8000u),
-    HAL_UART_BAUD_4800_DOUBLE = (207u | 0x8000u),
-    HAL_UART_BAUD_9600_DOUBLE = (103u | 0x8000u),
-    HAL_UART_BAUD_19200_DOUBLE = (51u | 0x8000u),
-    HAL_UART_BAUD_38400_DOUBLE = (25u | 0x8000u),
-    HAL_UART_BAUD_57600_DOUBLE = (15u | 0x8000u),
-    HAL_UART_BAUD_115200_DOUBLE = (8u | 0x8000u),
+    HAL_UART_DOUBLE_SPEED = 1 << 7
+} hal_uart_double_speed_t;
 
-    HAL_UART_BAUD_2400 = 207u,
-    HAL_UART_BAUD_4800 = 103u,
-    HAL_UART_BAUD_9600 = 51u,
-    HAL_UART_BAUD_19200 = 25u,
-    HAL_UART_BAUD_38400 = 12u,
-    HAL_UART_BAUD_57600 = 8u,
-    HAL_UART_BAUD_115200 = 3u,
-//#endif
-} hal_uart_baud_t;
+// typedef enum
+// {
+// #if F_CPU == 8000000ul
+//     HAL_UART_BAUD_2400_DOUBLE = (416u | 0x8000u),
+//     HAL_UART_BAUD_4800_DOUBLE = (207u | 0x8000u),
+//     HAL_UART_BAUD_9600_DOUBLE = (103u | 0x8000u),
+//     HAL_UART_BAUD_19200_DOUBLE = (51u | 0x8000u),
+//     HAL_UART_BAUD_38400_DOUBLE = (25u | 0x8000u),
+//     HAL_UART_BAUD_57600_DOUBLE = (15u | 0x8000u),
+//     HAL_UART_BAUD_115200_DOUBLE = (8u | 0x8000u),
+
+//     HAL_UART_BAUD_2400 = 207u,
+//     HAL_UART_BAUD_4800 = 103u,
+//     HAL_UART_BAUD_9600 = 51u,
+//     HAL_UART_BAUD_19200 = 25u,
+//     HAL_UART_BAUD_38400 = 12u,
+//     HAL_UART_BAUD_57600 = 8u,
+//     HAL_UART_BAUD_115200 = 3u,
+// #endif
+// } hal_uart_baud_t;
 
 
 
-hal_uart_err_t hal_uart_init(hal_uart_baud_t baud_rate, uint8_t settings, uint16_t rx_buffer_size, uint16_t tx_buffer_size);
+hal_uart_err_t hal_uart_init(uint32_t f_cpu, uint16_t baud_rate, uint8_t settings, uint16_t rx_buffer_size, uint16_t tx_buffer_size);
 
 hal_uart_err_t hal_uart_sendByte(uint8_t data);
 

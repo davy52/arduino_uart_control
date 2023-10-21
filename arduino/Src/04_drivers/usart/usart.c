@@ -3,6 +3,7 @@
 
 #include <stdint-gcc.h>
 
+#include "debug.h"
 typedef union
 {
     struct
@@ -116,9 +117,36 @@ typedef union
     REST IN DOCUMENTATION
 */
 
+uint32_t f_cpu;
+
 usart_err_t usart_init(usart_settings_t settings)
 {
     usart_err_t ret_val = USART_ERR_OK;
+    uint16_t prescaler = 0;
+    f_cpu = settings.f_cpu;
+    
+    if(USART_MODE_SYNC == settings.mode){
+        prescaler = (settings.f_cpu / (2 * settings.baud)) - 1;
+    } 
+    else if(USART_MODE_ASYNC == settings.mode){
+        if(settings.double_speed){
+            prescaler = (settings.f_cpu / (8 * settings.baud)) - 1;
+        }
+        else {
+            prescaler = (settings.f_cpu / (16 * settings.baud)) - 1;
+        }
+    }
+    blink_dur(1, 4);
+    blink_dur(settings.double_speed, 1);
+    blink_dur(1, 4);
+    blink_dur(1, 2);
+    blink_b32(settings.f_cpu);
+    blink_dur(1, 2);
+    blink_b32(settings.baud);
+    blink_dur(1, 2);
+    blink_b32(prescaler);
+    blink_dur(1, 2);
+    
 
     usart_status_a_t status_a = {
         .bits = {
@@ -162,13 +190,13 @@ usart_err_t usart_init(usart_settings_t settings)
     usart_baud_h_t baud_h = {
         .bits = {
             ._reserved = 0,
-            .baud_h = ((settings.prescaler & 0xFF00) >> 8) & 0xF
+            .baud_h = ((prescaler & 0xFF00) >> 8) & 0xF
         }
     };
 
     usart_baud_l_t baud_l = {
         .bits = {
-            .baud_l = (uint8_t)(settings.prescaler & 0x00FF)
+            .baud_l = (uint8_t)(prescaler & 0x00FF)
         }
     };
     
@@ -189,6 +217,7 @@ usart_err_t usart_init(usart_settings_t settings)
 usart_err_t usart_get_settings(usart_settings_t *settings)
 {
     usart_err_t ret_val = USART_ERR_OK;
+    uint16_t prescaler = 0;
     
     usart_status_a_t status_a = {
         .reg = UCSR0A
@@ -198,14 +227,6 @@ usart_err_t usart_get_settings(usart_settings_t *settings)
     };
     usart_status_c_t status_c = {
         .reg = UCSR0C
-    };
-    
-    usart_baud_h_t baud_h = {
-        .reg = UBRR0H
-    };
-
-    usart_baud_l_t baud_l = {
-        .reg = UBRR0L
     };
     
     usart_settings_t temp_settings = {
@@ -222,8 +243,24 @@ usart_err_t usart_get_settings(usart_settings_t *settings)
         .parity = (status_c.bits.parity_1 << 1) | (status_c.bits.parity_0),
         .stopbit_mode = status_c.bits.stopbit_sel,
         .clk_polarity = status_c.bits.clk_polarity,
-        .prescaler = (baud_h.reg << 8) | (baud_l.reg)
+        .baud = 0,
+        .f_cpu = f_cpu
     };
+
+    // calc selected baud rate
+    prescaler = (UBRR0H << 8) | UBRR0L;
+
+    if(USART_MODE_SYNC == temp_settings.mode){
+        temp_settings.baud = f_cpu / (2 * (prescaler + 1));
+    } 
+    else if(USART_MODE_ASYNC == temp_settings.mode){
+        if(temp_settings.double_speed){
+            temp_settings.baud = f_cpu / (8 * (prescaler + 1));
+        }
+        else {
+            temp_settings.baud = f_cpu / (16 * (prescaler + 1));
+        }
+    }
 
     *settings = temp_settings;
     return ret_val;

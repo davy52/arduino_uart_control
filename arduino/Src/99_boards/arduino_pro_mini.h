@@ -1,17 +1,16 @@
 #ifndef ARDUINO_PRO_MINI_H
 #define ARDUINO_PRO_MINI_H
 
-#ifndef ARDUINO_BOARD
-    #error "define ARDUINO_BOARD and include arduino_boards.h file"
+
+#ifdef arduino_pro_mini_5v
+    #define F_CPU 16000000UL
 #endif
 
-#if ARDUINO_BOARD == arduino_pro_mini_5v
-    #define F_CPU 16000000UL
-
-#elif ARDUINO_BOARD == arduino_pro_mini_3v3
+#ifdef arduino_pro_mini_3v3
     #define F_CPU 8000000UL
+#endif
 
-#else
+#ifndef F_CPU
     #error "define ARDUINO_BOARD and include arduino_boards.h instead of this file"
 #endif  
 

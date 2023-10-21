@@ -9,7 +9,7 @@
  * 
  */
 
-#define ARDUINO_BOARD arduino_pro_mini_3v3
+// #define arduino_pro_mini_3v3
 #include "arduino_boards.h"
 
 #include <util/delay.h>
@@ -46,7 +46,7 @@ int main(void)
     blink_dur(2, 5);
 
     // init uart
-    while( HAL_UART_ERR_OK != hal_uart_init(HAL_UART_BAUD_9600, HAL_UART_STOP_1BIT | HAL_UART_PARITY_EVEN | HAL_UART_CHAR_8BIT, 16u, 16u)){
+    while( HAL_UART_ERR_OK != hal_uart_init(F_CPU, 9600u, HAL_UART_STOP_1BIT | HAL_UART_PARITY_EVEN | HAL_UART_CHAR_8BIT, 16u, 16u)){
         PORTB ^= LED_BUILTIN;
         delay_ms(100);
     }
@@ -60,12 +60,10 @@ int main(void)
         
         hal_uart_getRxBufferCount(&rx_count);
         if(0 < rx_count){
-            blink_dur(1, 2);
-            err = hal_uart_readBytes(&data, rx_count);
+            err = hal_uart_readBytes(data, rx_count);
             err = hal_uart_sendBytes(data, rx_count);
         }
 
-        blink_dur(1, 5);
-        delay_ms(dtime);
+        // delay_ms(dtime);
     }
 }
