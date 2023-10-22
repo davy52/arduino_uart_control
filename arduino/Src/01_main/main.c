@@ -26,12 +26,6 @@
 
 // LOCKBITS = LOCKBITS_DEFAULT;
 
-// void delay_ms(uint32_t ms){
-//     while(ms--){
-//         _delay_ms(1);
-//     }
-// }
-
 
 #include <stdlib.h>
 int main(void)
