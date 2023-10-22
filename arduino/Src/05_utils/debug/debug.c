@@ -1,14 +1,10 @@
-#include "avr/io.h"
+#include "arduino_boards.h"
 
-#ifndef F_CPU
-#define F_CPU 8000000ul
-#endif
 #include <util/delay.h>
 #include "debug.h"
 #ifndef LED_BUILTIN
 #define LED_BUILTIN _BV(PB5)
 #endif
-#include "avr/interrupt.h"
 
 void delay_ms(uint32_t ms){
     while(ms--){
@@ -56,12 +52,13 @@ void blink_b32(uint32_t b32)
 {
     delay_ms(5);
     PORTB |= LED_BUILTIN;
-    delay_ms(1);
+    delay_ms(3);
     for(uint8_t i = 0; i < 32; i++){
         PORTB &= ~LED_BUILTIN;
         delay_ms(((b32 >> (31 - i)) & 1) ? 2 : 1);
         PORTB |= LED_BUILTIN;
         delay_ms(1);
     }
+    delay_ms(2);
     PORTB &= ~LED_BUILTIN;
 }

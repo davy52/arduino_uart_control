@@ -6,7 +6,7 @@
 #include "debug.h"
 typedef union
 {
-    struct
+    struct //TODO data_overrun and parity err handler
     {
         uint8_t multi_proc_mode : 1;        // multi prcessor mode enable
         uint8_t double_speed : 1;           // double transmit speed set 
@@ -136,16 +136,6 @@ usart_err_t usart_init(usart_settings_t settings)
             prescaler = (settings.f_cpu / (16 * settings.baud)) - 1;
         }
     }
-    blink_dur(1, 4);
-    blink_dur(settings.double_speed, 1);
-    blink_dur(1, 4);
-    blink_dur(1, 2);
-    blink_b32(settings.f_cpu);
-    blink_dur(1, 2);
-    blink_b32(settings.baud);
-    blink_dur(1, 2);
-    blink_b32(prescaler);
-    blink_dur(1, 2);
     
 
     usart_status_a_t status_a = {
@@ -298,4 +288,49 @@ usart_err_t usart_read(uint8_t *data)
 inline uint8_t usart_read_int()
 {
     return UDR0;
+}
+
+inline usart_err_int_t usart_check_err_int()
+{
+    return (UCSR0A & ((1<<FE0)|(1<<DOR0)|(1<<UPE0)) >> 2);
+}
+
+void usart_clear_buff()
+{
+    uint8_t data;
+    data = UDR0;
+    data = UDR0;
+    data = UDR0;
+    
+    UCSR0A &= ~(0b11111100);
+}
+
+void usart_enableTxInt()
+{
+    UCSR0B |= (1<<TXCIE0);
+}
+
+void usart_disableTxInt()
+{
+    UCSR0B &= ~(1<<TXCIE0);
+}
+
+void usart_enableRxInt()
+{
+    UCSR0B |= (1<<RXCIE0);
+}
+
+void usart_disableRxInt()
+{
+    UCSR0B &= ~(1<<RXCIE0);
+}
+
+void usart_enableDregInt()
+{
+    UCSR0B |= (1<<UDRIE0);
+}
+
+void usart_disableDregInt()
+{
+    UCSR0B &= ~(1<<UDRIE0);
 }

@@ -11,7 +11,8 @@ typedef enum
     RB_ERR_NOT_OK,
     RB_ERR_FULL,
     RB_ERR_EMPTY,
-    RB_ERR_NO_SPACE
+    RB_ERR_NO_SPACE,
+    RB_ERR_NOT_ENOUGH_DATA
 } rb_err_t;
 
 rb_err_t rb_init(ring_buffer_handle_t* handle, uint16_t size);
@@ -24,7 +25,7 @@ rb_err_t rb_insertMultiple(ring_buffer_handle_t handle, uint8_t *data, uint16_t 
 
 rb_err_t rb_pop(ring_buffer_handle_t handle, uint8_t *data);
 
-rb_err_t rb_popMultiple(ring_buffer_handle_t handle, uint8_t *data, uint16_t* data_len);
+rb_err_t rb_popMultiple(ring_buffer_handle_t handle, uint8_t *data, uint16_t data_len);
 
 uint8_t rb_isFull(ring_buffer_handle_t handle);
 

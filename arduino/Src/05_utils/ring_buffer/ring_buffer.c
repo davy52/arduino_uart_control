@@ -85,18 +85,19 @@ rb_err_t rb_insertMultiple(ring_buffer_handle_t handle, uint8_t *data, uint16_t 
     
     uint16_t iter = 0;
 
-    if((0u > rb->head - rb->tail) || (rb->size >= rb->data_size)){
+    if(rb->size >= rb->data_size){
         ret_val = RB_ERR_FULL;
         return ret_val;
     }
 
-    if( data_size >= rb_spaceLeft(handle) ){
+    if( data_size > rb_spaceLeft(handle) ){
         ret_val = RB_ERR_NO_SPACE;
         return ret_val;
     }
 
     for(iter = 0; iter < data_size; iter++){
         *(rb->head) = data[iter];
+
 
         rb->head++;
         if((rb->data_ptr) + (rb->data_size) - 1 < (rb->head)){
@@ -132,32 +133,33 @@ rb_err_t rb_pop(ring_buffer_handle_t handle, uint8_t *data)
     return ret_val;
 }
 
-rb_err_t rb_popMultiple(ring_buffer_handle_t handle, uint8_t *data, uint16_t* data_len)
+rb_err_t rb_popMultiple(ring_buffer_handle_t handle, uint8_t *data, uint16_t data_len)
 {
     rb_err_t ret_val = RB_ERR_OK;
     ring_buffer_t* rb = (ring_buffer_t*)handle;
     
     uint16_t iter = 0;
     
-    if((0 == (rb->size))){
+    if(0 >= (rb->size)){
         ret_val = RB_ERR_EMPTY;
         return ret_val;
     }
 
-    if ((rb->size) <= *data_len){
-        *data_len = (rb->size);
+    if ((rb->size) < data_len){
+        ret_val = RB_ERR_NOT_ENOUGH_DATA;
+        return ret_val;
     }
     
-    for (iter = 0; iter < *data_len; iter++){
+    for (iter = 0; iter < data_len; iter++){
         data[iter] = *(rb->tail);
 
-        rb->tail++;
+        (rb->tail)++;
         if((rb->data_ptr) + (rb->data_size) - 1 < (rb->tail)){
             (rb->tail) = (rb->data_ptr);
         }
     }
     
-    (rb->size) -= *data_len;
+    (rb->size) -= data_len;
 
     return ret_val;
 }

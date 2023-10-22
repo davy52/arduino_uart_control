@@ -63,8 +63,18 @@ typedef enum
 {
     USART_ERR_OK,
     USART_ERR_NOT_OK,
-    USART_ERR_BAS_SETTINGS
+    USART_ERR_BAS_SETTINGS,
+    USART_ERR_FRAME,
+    USART_ERR_PARITY,
+    USART_ERR_DATA_OVERRUN
 } usart_err_t;
+
+typedef enum
+{
+    USART_ERR_INT_FRAME     = 0x04,
+    USART_ERR_INT_DOVER     = 0x02,
+    USART_ERR_INT_PARITY    = 0x01
+} usart_err_int_t;
 
 typedef struct
 {
@@ -143,10 +153,26 @@ usart_err_t usart_read(uint8_t *data);
  * @brief function to read received data on usart module. Safe to use inside interrupt
  * 
  */
- uint8_t usart_read_int();
+uint8_t usart_read_int();
+
+usart_err_int_t usart_check_err_int();
 
 // TODO:
 usart_err_t usart_read9(uint16_t *data);
+
+void usart_clear_buff();
+
+void usart_enableTxInt();
+
+void usart_disableTxInt();
+
+void usart_enableRxInt();
+
+void usart_disableRxInt();
+
+void usart_enableDregInt();
+
+void usart_disableDregInt();
 
 
 #endif /* USART_H */

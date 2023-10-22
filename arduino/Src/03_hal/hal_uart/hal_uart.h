@@ -5,10 +5,15 @@
 
 typedef enum
 {
-    HAL_UART_ERR_OK,
-    HAL_UART_ERR_NOT_OK,
-    HAL_UART_ERR_BUFF_FULL,
-    HAL_UART_ERR_BUFF_EMPTY
+    HAL_UART_ERR_OK                     = 0x00,
+    HAL_UART_ERR_NOT_OK                 = 0x01,
+    HAL_UART_ERR_BUFF_FULL              = 0x02,
+    HAL_UART_ERR_BUFF_EMPTY             = 0x03,
+    HAL_UART_ERR_NOT_ENOUGH_IN_BUFFER   = 0x04,
+
+    HAL_UART_ERR_PARITY                 = 0x08,
+    HAL_UART_ERR_DOVER                  = 0x10,
+    HAL_UART_ERR_FRAME                  = 0x20
 } hal_uart_err_t;
 
 typedef enum
@@ -81,6 +86,8 @@ hal_uart_err_t hal_uart_readBytes9(uint16_t *data, uint16_t data_len);
 
 hal_uart_err_t hal_uart_getRxBufferCount(uint16_t* rx_buffer_count);
 
+hal_uart_err_t hal_uart_clearBuffers();
+
 /**
  * @brief function for creation of response vectors (automatic response to received packets)
  * @warning works only for one-byte size frames
@@ -93,7 +100,7 @@ hal_uart_err_t hal_uart_getRxBufferCount(uint16_t* rx_buffer_count);
  */
 hal_uart_err_t hal_uart_response_init(uint8_t *format, uint8_t format_len, uint8_t *data, uint16_t *data_len);
 
-void hal_temp(uint8_t data);
+hal_uart_err_t hal_uart_getErrs();
 
 
 #endif /* HAL_UART_H */

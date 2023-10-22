@@ -4,7 +4,7 @@ INCLUDE_DIRS=
 # add files here
 INCLUDE_DIRS+=./Src/01_main
 
-INCLUDE_DIRS+=./Src/02_apps
+INCLUDE_DIRS+=./Src/02_apps/uart_control
 
 INCLUDE_DIRS+=./Src/03_hal/nrf24l01
 INCLUDE_DIRS+=./Src/03_hal/ssd1306
