@@ -31,6 +31,142 @@ typedef enum {
 } pin_mode_t;
 
 
+typedef struct 
+{
+    uint8_t* data_reg;
+    uint8_t* dir_reg;
+    uint8_t* in_reg;
+    uint8_t num;
+} pin_t;
+
+// pins
+const pin_t d0 = {
+    .data_reg   = &PORTD,
+    .dir_reg    = &DDRD,
+    .in_reg     = &PIND,
+    .num        = 0u
+};
+
+const pin_t d1 = {
+    .data_reg   = &PORTD,
+    .dir_reg    = &DDRD,
+    .in_reg     = &PIND,
+    .num        = 1u
+};
+
+const pin_t d2 = {
+    .data_reg   = &PORTD,
+    .dir_reg    = &DDRD,
+    .in_reg     = &PIND,
+    .num        = 2u
+};
+
+const pin_t d3 = {
+    .data_reg   = &PORTD,
+    .dir_reg    = &DDRD,
+    .in_reg     = &PIND,
+    .num        = 3u
+};
+
+const pin_t d4 = {
+    .data_reg   = &PORTD,
+    .dir_reg    = &DDRD,
+    .in_reg     = &PIND,
+    .num        = 4u
+};
+
+const pin_t d5 = {
+    .data_reg   = &PORTD,
+    .dir_reg    = &DDRD,
+    .in_reg     = &PIND,
+    .num        = 5u
+};
+
+const pin_t d6 = {
+    .data_reg   = &PORTD,
+    .dir_reg    = &DDRD,
+    .in_reg     = &PIND,
+    .num        = 6u
+};
+
+const pin_t d7 = {
+    .data_reg   = &PORTD,
+    .dir_reg    = &DDRD,
+    .in_reg     = &PIND,
+    .num        = 7u
+};
+
+const pin_t d8 = {
+    .data_reg   = &PORTB,
+    .dir_reg    = &DDRB,
+    .in_reg     = &PINB,
+    .num        = 0u
+};
+
+const pin_t d9 = {
+    .data_reg   = &PORTB,
+    .dir_reg    = &DDRB,
+    .in_reg     = &PINB,
+    .num        = 1u
+};
+
+const pin_t d10 = {
+    .data_reg   = &PORTB,
+    .dir_reg    = &DDRB,
+    .in_reg     = &PINB,
+    .num        = 2u
+};
+
+const pin_t d11 = {
+    .data_reg   = &PORTB,
+    .dir_reg    = &DDRB,
+    .in_reg     = &PINB,
+    .num        = 3u
+};
+
+const pin_t d12 = {
+    .data_reg   = &PORTB,
+    .dir_reg    = &DDRB,
+    .in_reg     = &PINB,
+    .num        = 4u
+};
+
+
+const pin_t d13 = {
+    .data_reg   = &PORTB,
+    .dir_reg    = &DDRB,
+    .in_reg     = &PINB,
+    .num        = 5u
+};
+
+const pin_t a0 = {
+    .data_reg   = &PORTC,
+    .dir_reg    = &DDRC,
+    .in_reg     = &PINC,
+    .num        = 0u
+};
+
+const pin_t a1 = {
+    .data_reg   = &PORTC,
+    .dir_reg    = &DDRC,
+    .in_reg     = &PINC,
+    .num        = 1u
+};
+
+const pin_t a2 = {
+    .data_reg   = &PORTC,
+    .dir_reg    = &DDRC,
+    .in_reg     = &PINC,
+    .num        = 2u
+};
+
+const pin_t a3 = {
+    .data_reg   = &PORTC,
+    .dir_reg    = &DDRC,
+    .in_reg     = &PINC,
+    .num        = 3u
+};
+
 // FUNCTIONS ===================================
 
 
@@ -40,7 +176,7 @@ typedef enum {
  * @param pin pin designation (TODO: pin designation not defined yet)
  * @param mode pinmode
  */
-void set_pinMode(int pin, pin_mode_t mode);
+void set_pinMode(pin_t pin, pin_mode_t mode);
 
 
 /*
@@ -49,7 +185,7 @@ void set_pinMode(int pin, pin_mode_t mode);
  * @param pin pin designation (TODO: pin designation not defined yet)
  * @return pin_mode_t 
  */
-pin_mode_t get_pinMode(int pin);
+pin_mode_t get_pinMode(pin_t pin);
 
 
 /*
@@ -58,7 +194,7 @@ pin_mode_t get_pinMode(int pin);
  * @param pin pin designation (TODO: pin designation not defined yet)
  * @param state state to be set on an output pin
  */
-void set_pinState(int pin, pin_state_t state);
+void set_pinState(pin_t pin, pin_state_t state);
 
 
 /*
@@ -67,7 +203,7 @@ void set_pinState(int pin, pin_state_t state);
  * @param pin  pin designation (TODO: pin designation not defined yet)
  * @return pin_state_t state of selected pin
  */
-pin_state_t get_pinState(int pin);
+pin_state_t get_pinState(pin_t pin);
 
 
 #endif /* PORT_H */
